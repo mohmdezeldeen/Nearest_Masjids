@@ -2,5 +2,12 @@
     <string name="app_name">Nearest Masjids</string>
     <string name="txt_no_masjids_found">لا توجد مساجد فى هذا النطاق</string>
     <string name="txt_no_pic_for_masjid">لا توجد صور للمسجد</string>
+    <string name="txt_app_need_permission">يحتاج التطبيق لإذون الحصول على الموقع لإكمال عملية البحث عن المساجد القريبة</string>
     <string name="error_internet_connection">تحقق من إتصال الإنترنت</string>
+    <string name="title_activity_main">المساجد القريبة</string>
+    <string name="btn_ok">موافق</string>
+    <string name="btn_cancel">إلغاء</string>
+    <string name="request_location_settings">خدمات الموقع غير مفعلة، هل تريد فتح إلإعدادات؟</string>
+    <string name="error_could_not_connect">لم نتمكن من تحديد الموقع</string>
+    <string name="request_location_permissions_denied">تم رفض طلب الوصول للموقع</string>
 </resources>

@@ -18,9 +18,6 @@ public interface MasjidDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertMasjid(Masjid masjid);
 
-    @Query("SELECT * FROM masjid WHERE id = :id")
-    LiveData<Masjid> loadMasjidById(int id);
-
     @Query("DELETE FROM masjid")
     void deleteAll();
 

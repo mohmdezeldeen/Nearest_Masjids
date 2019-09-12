@@ -59,7 +59,7 @@ public class MasjidAdapter extends RecyclerView.Adapter<MasjidAdapter.MyViewHold
     }
 
     public interface ItemClickListener {
-        void onItemClickListener(int itemId);
+        void onItemClickListener(String masjidName, String masjidDistance);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -76,8 +76,8 @@ public class MasjidAdapter extends RecyclerView.Adapter<MasjidAdapter.MyViewHold
 
         @Override
         public void onClick(View view) {
-            int elementId = mMasjidsList.get(getAdapterPosition()).getId();
-            mItemClickListener.onItemClickListener(elementId);
+            Masjid masjid = mMasjidsList.get(getAdapterPosition());
+            mItemClickListener.onItemClickListener(masjid.fetchName(), masjid.fetchDistance());
         }
 
     }

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:layout_margin="6dp"
     tools:context=".activites.MainFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layoutDirection="rtl">
 
 
     <LinearLayout

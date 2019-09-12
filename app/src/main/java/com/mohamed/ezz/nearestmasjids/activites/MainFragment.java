@@ -39,6 +39,8 @@ import static android.widget.LinearLayout.VERTICAL;
 
 public class MainFragment extends Fragment implements MasjidAdapter.ItemClickListener {
 
+    public static final String EXTRA_LATITUDE = "latitude";
+    public static final String EXTRA_LONGITUDE = "longitude";
     private static final String TAG = MainFragment.class.getSimpleName();
     private AppDatabase db;
     private MasjidAdapter masjidAdapter;
@@ -47,14 +49,14 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
     SeekBar seekBar;
     @BindView(R.id.tvSBCurrentNo)
     TextView tvSBCurrentNo;
-
     @BindView(R.id.rvMasjids)
     RecyclerView rvMasjids;
-
     @BindView(R.id.llNoMasjid)
     LinearLayout llNoMasjid;
 
-    private int radius = 10;
+    private int radius = 3;
+    private double latitude;
+    private double longitude;
 
     @Nullable
     @Override
@@ -67,6 +69,12 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
         rvMasjids.setAdapter(masjidAdapter);
         seekBar.setProgress(radius);
 
+        if (getArguments() != null) {
+            Bundle arguments = getArguments();
+            latitude = arguments.getDouble(EXTRA_LATITUDE);
+            longitude = arguments.getDouble(EXTRA_LONGITUDE);
+        }
+
         tvSBCurrentNo.setText(radius + " KM");
         if (CommonUtils.checkConnection(fragmentBelongActivity))
             new FetchNearestMasjidsTask(fragmentBelongActivity).execute();
@@ -77,7 +85,7 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tvSBCurrentNo.setText(progress + " KM");
-
+                radius = progress;
             }
 
             @Override
@@ -97,54 +105,6 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
         rvMasjids.addItemDecoration(decoration);
         db = AppDatabase.getInstance(fragmentBelongActivity);
         setupViewModel();
-
-
-//        if (rootView != null) {
-//
-//
-//            // Click this button will show the text in right fragment.
-//            Button androidButton = (Button) rootView.findViewById(R.id.fragmentLeftButtonAndroid);
-//            androidButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//
-//                    // Do not use fragmentBelongActivity.getFragmentManager() method which is not compatible with older android os version. .
-//                    FragmentManager fragmentManager = fragmentBelongActivity.getSupportFragmentManager();
-//
-//                    // Get right Fragment object.
-//                    Fragment detailsFragment = fragmentManager.findFragmentById(R.id.detailsFragment);
-//
-//                    // Get the TextView object in right Fragment.
-//                    final TextView rightFragmentTextView = (TextView) detailsFragment.getView().findViewById(R.id.fragmentRightTextView);
-//
-//                    // Set text in right Fragment TextView.
-//                    rightFragmentTextView.setText("You click Android button.");
-//                }
-//            });
-//
-//
-//            // Click this button will show a Toast popup.
-//            Button iosButton = (Button) rootView.findViewById(R.id.fragmentLeftButtonIos);
-//            iosButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(fragmentBelongActivity, "You click IOS button.", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//
-//
-//            // Click this button will show an alert dialog.
-//            Button windowsButton = (Button) rootView.findViewById(R.id.fragmentLeftButtonWindows);
-//            windowsButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    AlertDialog alertDialog = new AlertDialog.Builder(fragmentBelongActivity).create();
-//                    alertDialog.setMessage("You click Windows button.");
-//                    alertDialog.show();
-//                }
-//            });
-//        }
-
         return rootView;
     }
 
@@ -166,22 +126,19 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
         });
     }
 
-
     @Override
-    public void onItemClickListener(int itemId) {
-        db.masjidDao().loadMasjidById(itemId).observe(this, new Observer<Masjid>() {
-            @Override
-            public void onChanged(Masjid masjid) {
-                boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
-                if (tabletSize) {
-                    MainActivity.fragmentManager.beginTransaction().add(R.id.fragmentContainer2, new DetailsFragment(), null).commit();
-                } else {
-                    MainActivity.fragmentManager.beginTransaction().replace(R.id.fragmentContainer, new DetailsFragment(), null).commit();
-                }
-
-            }
-        });
-
+    public void onItemClickListener(String masjidName, String masjidDistance) {
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(detailsFragment.EXTRA_MASJID_NAME, masjidName);
+        bundle.putString(detailsFragment.EXTRA_MASJID_DISTANCE, masjidDistance);
+        detailsFragment.setArguments(bundle);
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+        if (tabletSize) {
+            MainActivity.fragmentManager.beginTransaction().add(R.id.fragmentContainer2, detailsFragment, null).commit();
+        } else {
+            MainActivity.fragmentManager.beginTransaction().replace(R.id.fragmentContainer, detailsFragment, null).addToBackStack("detailsFragment").commit();
+        }
     }
 
     public class FetchNearestMasjidsTask extends AsyncTask<Void, Void, Void> {
@@ -205,7 +162,11 @@ public class MainFragment extends Fragment implements MasjidAdapter.ItemClickLis
         @Nullable
         @Override
         protected Void doInBackground(Void... params) {
-            ApiService.fetchDataFromServer(db, 29.97162, 31.11374, radius);
+            if (latitude == 0.0)
+                latitude = 29.97162;
+            if (longitude == 0.0)
+                longitude = 31.11374;
+            ApiService.fetchDataFromServer(db, latitude, longitude, radius);
             return null;
         }
 

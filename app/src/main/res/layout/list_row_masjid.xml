@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:gravity="center"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:layoutDirection="rtl">
 
     <TextView
         android:id="@+id/tvName"

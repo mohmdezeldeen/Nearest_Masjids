@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:layout_margin="6dp"
     tools:context=".activites.DetailsFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layoutDirection="rtl">
 
 
     <androidx.cardview.widget.CardView
@@ -28,6 +29,8 @@
                 android:layout_height="140dp"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:src="@drawable/ic_mosque" />
 
 
@@ -66,15 +69,14 @@
                 android:id="@+id/llFooter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tvMasjidName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="60"
-                    android:gravity="start"
+                    android:layout_weight="55"
+                    android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@android:color/white"
                     android:background="@color/colorGreen"
@@ -85,7 +87,7 @@
                     android:id="@+id/tvDistance"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="15"
+                    android:layout_weight="20"
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@android:color/white"
@@ -104,13 +106,10 @@
                     android:textColor="@android:color/white"
                     android:background="@color/colorGreenDark"
                     android:textStyle="bold"
-                    tools:text="الاتجاهات" />
-
-
+                    android:text="الاتجاهات" />
             </LinearLayout>
 
         </LinearLayout>
-
 
     </androidx.cardview.widget.CardView>
 
